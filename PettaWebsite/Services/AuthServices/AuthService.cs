@@ -29,7 +29,6 @@ namespace PettaWebsite.Services.AuthServices
           "email": "admin@gamil.com",
           "password": "Admin@123",
           "confirmPassword": "Admin@123",
-          "adress": "Rades",
           "phoneNumber": "29491822"
         }
          */

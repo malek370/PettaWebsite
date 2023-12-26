@@ -12,8 +12,8 @@ using PettaWebsite.DataContext;
 namespace PettaWebsite.Migrations
 {
     [DbContext(typeof(PettaDbContext))]
-    [Migration("20231224121816_initialisation")]
-    partial class initialisation
+    [Migration("20231226222252_initAddPets")]
+    partial class initAddPets
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,82 @@ namespace PettaWebsite.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PettaWebsite.Models.Pet", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Breed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMale")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Pure")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Weight")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Pets");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Pet");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("PettaWebsite.Models.Cat", b =>
+                {
+                    b.HasBaseType("PettaWebsite.Models.Pet");
+
+                    b.HasDiscriminator().HasValue("Cat");
+                });
+
+            modelBuilder.Entity("PettaWebsite.Models.Dog", b =>
+                {
+                    b.HasBaseType("PettaWebsite.Models.Pet");
+
+                    b.HasDiscriminator().HasValue("Dog");
+                });
+
+            modelBuilder.Entity("PettaWebsite.Models.Horse", b =>
+                {
+                    b.HasBaseType("PettaWebsite.Models.Pet");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Horse");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -272,6 +348,15 @@ namespace PettaWebsite.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PettaWebsite.Models.Pet", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PettaWebsite.DTOs.AuthDTOs;
 using PettaWebsite.Services.AuthServices;
 
@@ -27,6 +28,7 @@ namespace PettaWebsite.Controllers
             var res = await _authService.Register(reguser);
             if (res.Success) { return Ok(res); }
             return BadRequest(res);
+            
         }
     }
 }

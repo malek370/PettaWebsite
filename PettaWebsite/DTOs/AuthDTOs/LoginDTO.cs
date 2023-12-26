@@ -4,6 +4,7 @@ namespace PettaWebsite.DTOs.AuthDTOs
 {
     public class LoginDTO
     {
+        [EmailAddress]
         [Required(ErrorMessage = "email is required")]
         public string Email { get; set; } = "";
 
