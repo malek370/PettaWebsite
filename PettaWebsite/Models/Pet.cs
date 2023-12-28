@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PettaWebsite.DTOs.PetDTO;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace PettaWebsite.Models
 {
-    public class Pet
+    public abstract class Pet
     {
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
@@ -20,6 +21,7 @@ namespace PettaWebsite.Models
         public string? Description { get; set; }
         public required IdentityUser Owner { get; set; }
         public DateTime? Created { get; set; }
+        public abstract GetPetDTO Map(IMapper mapper);
 
         
     }

@@ -8,8 +8,8 @@ namespace PettaWebsite.Services.PetServices
     {
         public Task<Response<Pet>> AddPet(AddPetDTO pet);
         public Task<Response<object>> DeletPet(string petId);
-        public Task<Response<Pet>> GetPet(string petId);
-        public Task<Response<List<Pet>>> GetAllPet(string petType);
-
+        public Task<Response<GetPetDTO>> GetPet(string petId);
+        public Task<Response<List<GetPetDTO>>> GetAllPet<T>() where T : Pet;
+        public Task<Response<List<GetPetDTO>>> GetPetsByUser();
     }
 }

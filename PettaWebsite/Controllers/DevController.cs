@@ -65,7 +65,8 @@ namespace PettaWebsite.Controllers
         public async Task<IActionResult> AddHorse(AddHorseDTO Horse)
         {
             var result = await _petService.AddPet(Horse);
-            if (result.Success) { return Ok(result); }
+            if (result.Success) { 
+                return Ok(result); }
             else { return BadRequest(result); }
         }
     }

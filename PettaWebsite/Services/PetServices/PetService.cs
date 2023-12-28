@@ -22,6 +22,7 @@ namespace PettaWebsite.Services.PetServices
             _mapper = mapper;
             _dbContext = dbContext;
         }
+        
         public async Task<Response<Pet>> AddPet(AddPetDTO petDTO)
         {
             var result = new Response<Pet>();
@@ -29,30 +30,78 @@ namespace PettaWebsite.Services.PetServices
             {
                 Pet pet=petDTO.Map(_mapper);
                 //Pet pet = _mapper.Map(petDTO);
-                //pet.Owner = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-                pet.Owner = await _userManager.FindByEmailAsync("admin@gamil.com");
+                pet.Owner = await _userManager!.GetUserAsync(_contextAccessor.HttpContext!.User);
                 pet.Created= DateTime.Now;
                 await _dbContext.AddAsync(pet);
                 await _dbContext.SaveChangesAsync();
-                result.Data = pet;
+                result.Data = pet ;
             }
             catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
             return result;
         }
 
-        public Task<Response<object>> DeletPet(string petId)
+        public async Task<Response<object>> DeletPet(string petId)
         {
-            throw new NotImplementedException();
+            var result = new Response<object>();
+            try
+            {
+                
+                Pet? pet=await _dbContext.Pets.FirstOrDefaultAsync(p=>p.Id==petId);
+                if(pet==null) { throw new Exception("Pet not found"); }
+                _dbContext.Remove(pet);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
+            return result;
         }
 
-        public Task<Response<List<Pet>>> GetAllPet(string petType)
+        public async Task<Response<List<GetPetDTO>>> GetAllPet<T>()where T:Pet
         {
-            throw new NotImplementedException();
+            var result = new Response<List<GetPetDTO>>();
+            try
+            {
+                
+                result.Data = await _dbContext.Pets
+                    .Include(p=>p.Owner)
+                    .OfType<T>()
+                    .Select(p => p.Map(_mapper))
+                    .ToListAsync(); 
+
+            }
+            catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
+            return result;
         }
 
-        public Task<Response<Pet>> GetPet(string petId)
+        public async Task<Response<GetPetDTO>> GetPet(string petId)
         {
-            throw new NotImplementedException();
+            var result = new Response<GetPetDTO>();
+            try
+            {
+                GetPetDTO? pet=await _dbContext.Pets
+                    .Include (p=>p.Owner)
+                    .Select (p=>p.Map(_mapper))
+                    .FirstOrDefaultAsync(p=>p.Id==petId) ;
+                if (pet == null) { throw new Exception("Pet not found"); }
+                result.Data=pet;
+            }
+            catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
+            return result;
         }
+
+        public async Task<Response<List<GetPetDTO>>> GetPetsByUser()
+        {
+            var result = new Response<List<GetPetDTO>>();
+            try
+            {
+                string userId = _userManager.GetUserAsync(_contextAccessor.HttpContext!.User).Result!.Id;
+                result.Data = await _dbContext.Pets
+                                        .Include(p => p.Owner)
+                                        .Select(p => p.Map(_mapper))
+                                        .ToListAsync();
+            }
+            catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
+            return result;
+        }
+
     }
 }
