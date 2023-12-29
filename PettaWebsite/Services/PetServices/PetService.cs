@@ -77,12 +77,11 @@ namespace PettaWebsite.Services.PetServices
             var result = new Response<GetPetDTO>();
             try
             {
-                GetPetDTO? pet=await _dbContext.Pets
+                Pet? pet=await _dbContext.Pets
                     .Include (p=>p.Owner)
-                    .Select (p=>p.Map(_mapper))
                     .FirstOrDefaultAsync(p=>p.Id==petId) ;
                 if (pet == null) { throw new Exception("Pet not found"); }
-                result.Data=pet;
+                result.Data=pet.Map(_mapper);
             }
             catch (Exception ex) { result.Message = ex.Message; result.Success = false; }
             return result;
