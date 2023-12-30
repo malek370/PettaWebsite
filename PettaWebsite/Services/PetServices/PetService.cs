@@ -92,6 +92,7 @@ namespace PettaWebsite.Services.PetServices
             {
                 string userId = _userManager.GetUserAsync(_contextAccessor.HttpContext!.User).Result!.Id;
                 result.Data = await _dbContext.Pets
+                                        .OfType<T>()    
                                         .Include(p => p.Owner)
                                         .Select(p => _mapper.Map<V>(p))
                                         .ToListAsync();

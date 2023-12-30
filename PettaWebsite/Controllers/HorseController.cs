@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PettaWebsite.DTOs.PetDOTs;
 using PettaWebsite.Models;
@@ -9,26 +8,26 @@ namespace PettaWebsite.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DogController : ControllerBase
+    public class HorseController : ControllerBase
     {
-        private readonly IPetService<Dog,AddDogDTO,GetDogDTO> _PetService;
-        public DogController(IPetService<Dog, AddDogDTO, GetDogDTO> petService) 
+        private readonly IPetService<Horse, AddHorseDTO, GetHorseDTO> _PetService;
+        public HorseController(IPetService<Horse, AddHorseDTO, GetHorseDTO> petService)
         {
             _PetService = petService;
         }
         [HttpPost]
         //[Authorize(Roles = "CLIENT")]
-        public async Task<IActionResult> AddDog(AddDogDTO dog)
+        public async Task<IActionResult> AddDog(AddHorseDTO horse)
         {
-            var result = await _PetService.AddPet(dog);
+            var result = await _PetService.AddPet(horse);
             if (result.Success) { return Ok(result); }
             else { return BadRequest(result); }
         }
         [HttpGet()]
         //[Authorize(Roles = "CLIENT")]
-        public async Task<IActionResult> Get(string dogId)
+        public async Task<IActionResult> Get(string horseId)
         {
-            var result = await _PetService.GetPet(dogId);
+            var result = await _PetService.GetPet(horseId);
             if (result.Success) { return Ok(result); }
             else { return BadRequest(result); }
         }
