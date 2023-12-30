@@ -75,6 +75,7 @@ namespace PettaWebsite.Services.PetServices
             try
             {
                 Pet? pet = await _dbContext.Pets
+                    .OfType<T>()
                     .Include(p => p.Owner)
                     .FirstOrDefaultAsync(p => p.Id == petId);
                 if (pet == null) { throw new Exception("Pet not found"); }
