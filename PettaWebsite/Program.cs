@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PettaWebsite.DataContext;
+using PettaWebsite.DTOs.PetDOTs;
+using PettaWebsite.Models;
 using PettaWebsite.Services.AuthServices;
+using PettaWebsite.Services.PetServices;
 using System.Text;
 
 namespace PettaWebsite
@@ -17,6 +20,7 @@ namespace PettaWebsite
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(typeof(Program));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -29,6 +33,7 @@ namespace PettaWebsite
             
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddScoped(typeof(IPetService<,,>), typeof(PetService<,,>));
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddAuthentication(Options =>
             {
